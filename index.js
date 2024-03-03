@@ -16,7 +16,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.set('view engine', 'ejs');
-app.set('views', './views'); // Directorio donde se encuentran tus vistas
+app.set('pagina', './pagina'); // Directorio donde se encuentran tus vistas
 app.use(methodOverride('_method'));
 
 
