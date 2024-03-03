@@ -1,137 +1,175 @@
 const Product = require('../models/Product');
+const url = require('url');
 
-// Función para obtener la vista con todos los productos
+// Función para mostrar todos los productos
 const showProducts = async (req, res) => {
-    try {
-        const products = await Product.find();
-        const productCards = getProductCards(products);
-        const html = baseHtml + getNavBar() + productCards;
-        res.send(html);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener los productos');
+  try {
+    const fullUrl = req.originalUrl;
+    console.log('URL completa:', fullUrl);
+
+    // Analizar la URL para obtener los parámetros de consulta
+    const parsedUrl = new URL(fullUrl, 'http://localhost:3000');
+    const queryParams = parsedUrl.searchParams;
+    console.log('Parámetros de consulta:', queryParams.toString());
+
+    // Extraer el parámetro "category" de los parámetros de consulta
+    const category = queryParams.get('category');
+    console.log('Categoría:', category);
+
+    if (category) {
+      const products = await Product.find({ 'category': category });
+      res.render('products', { products });
+    } else {
+      const products = await Product.find();
+      res.render('products', { products });
     }
+
+    
+
+    // Renderizar la vista con los productos filtrados
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error al obtener los productos');
+  }
 };
 
-// Función para obtener la vista con el detalle de un producto por su ID
+
+// Función para mostrar el detalle de un producto por su ID
 const showProductById = async (req, res) => {
-    const productId = req.params.productId;
-    try {
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).send('Producto no encontrado');
-        }
-        const html = generateProductDetailHTML(product);
-        res.send(html);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener el detalle del producto');
+  try {
+    const product = await Product.findById(req.params.productId);
+    if (!product) {
+      return res.status(404).send('Producto no encontrado');
     }
+    res.render('productDetail', { product });
+  } catch (error) {
+    res.status(500).send('Error al obtener el producto');
+  }
 };
 
-// Función para obtener la vista con el formulario para subir un nuevo producto
-const showNewProduct = async (req, res) => {
-    try {
-        const html = generateNewProductFormHTML();
-        res.send(html);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener el formulario para un nuevo producto');
-    }
+// Función para mostrar el formulario de creación de un nuevo producto
+const showNewProductForm = (req, res) => {
+  res.render('newProduct');
 };
 
-// Función para crear un nuevo producto
+// Función para mostrar el formulario para crear un nuevo producto
+const getNewProductForm = (req, res) => {
+    res.send(`
+      <h1>Crear Nuevo Producto</h1>
+      <form action="/dashboard/new" method="POST">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" required><br>
+        <label for="description">Descripción:</label>
+        <input type="text" id="description" name="description" required><br>
+        <label for="image">Imagen (URL):</label>
+        <input type="text" id="image" name="image" required><br>
+        <label for="category">Categoría:</label>
+        <select id="category" name="category" required>
+          <option value="Camisetas">Camisetas</option>
+          <option value="Pantalones">Pantalones</option>
+          <option value="Zapatos">Zapatos</option>
+          <option value="Accesorios">Accesorios</option>
+        </select><br>
+        <label for="size">Talla:</label>
+        <select id="size" name="size" required>
+          <option value="XS">XS</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select><br>
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" required><br>
+        <button type="submit">Crear Producto</button>
+      </form>
+    `);
+  };
+  
+
+// Función para manejar la creación de un nuevo producto
 const createProduct = async (req, res) => {
-    const productData = req.body;
-    try {
-        const newProduct = new Product(productData);
-        await newProduct.save();
-        res.redirect(`/products/${newProduct._id}`);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al crear un nuevo producto');
-    }
+  try {
+    const { name, description, image, category, size, price } = req.body;
+
+    // Crear un nuevo producto con los datos del formulario
+    const newProduct = new Product({
+      name,
+      description,
+      image,
+      category,
+      size,
+      price
+    });
+    await newProduct.save();
+
+    // Redireccionar 
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('Error al crear el producto:', error);
+    res.status(500).send('Error interno del servidor');
+  }
 };
 
-// Función para obtener la vista con el formulario para editar un producto por su ID
-const showEditProduct = async (req, res) => {
-    const productId = req.params.productId;
-    try {
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).send('Producto no encontrado');
-        }
-        const html = generateEditProductFormHTML(product);
-        res.send(html);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener el formulario para editar un producto');
+// Función para mostrar el formulario de edición de un producto por su ID
+const showEditProductForm = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    if (!product) {
+      return res.status(404).send('Producto no encontrado');
     }
+    res.render('editProduct', { product });
+  } catch (error) {
+    res.status(500).send('Error al obtener el producto para editar');
+  }
 };
 
 // Función para actualizar un producto por su ID
 const updateProduct = async (req, res) => {
-    const productId = req.params.productId;
-    const updatedProductData = req.body;
-    try {
-        const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, { new: true });
-        res.redirect(`/products/${updatedProduct._id}`);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al actualizar el producto');
-    }
+  try {
+    const { name, description, image, category, size, price } = req.body;
+    await Product.findByIdAndUpdate(req.params.productId, { name, description, image, category, size, price });
+    res.redirect('/dashboard/' + req.params.productId);
+  } catch (error) {
+    res.status(500).send('Error al actualizar el producto');
+  }
 };
 
 // Función para eliminar un producto por su ID
 const deleteProduct = async (req, res) => {
-    const productId = req.params.productId;
-    try {
-        const deletedProduct = await Product.findByIdAndDelete(productId);
-        res.redirect('/products');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al eliminar el producto');
+  try {
+    const productId = req.params.productId;   
+    await Product.findByIdAndDelete(productId);
+    res.redirect('/products'); 
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    res.status(500).send('Error interno del servidor');
+  }
+};
+
+// Función para mostrar el detalle de un producto en el dashboard
+const showProductInDashboard = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    if (!product) {
+      return res.status(404).send('Producto no encontrado');
     }
+    res.render('productDetailInDashboard', { product }); 
+  } catch (error) {
+    res.status(500).send('Error al obtener el producto para mostrar en el dashboard');
+  }
 };
 
-// Función para generar el HTML de las tarjetas de productos
-const getProductCards = (products) => {
-    let html = '';
-    for (let product of products) {
-        html += `
-            <div class="product-card">
-                <img src="${product.image}" alt="${product.name}">
-                <h2>${product.name}</h2>
-                <p>${product.description}</p>
-                <p>${product.price}€</p>
-                <a href="/products/${product._id}">Ver detalle</a>
-            </div>
-        `;
-    }
-    return html;
-};
 
-// Función para generar el HTML del formulario para subir un nuevo producto
-const generateNewProductFormHTML = () => {
-    // Aquí podrías retornar el formulario HTML para crear un nuevo producto
-};
-
-// Función para generar el HTML del formulario para editar un producto
-const generateEditProductFormHTML = (product) => {
-    // Aquí podrías retornar el formulario HTML prellenado con los datos del producto
-};
-
-// Función para generar el HTML del detalle de un producto
-const generateProductDetailHTML = (product) => {
-    // Aquí podrías retornar el HTML con el detalle completo del producto
-};
 
 module.exports = {
-    showProducts,
-    showProductById,
-    showNewProduct,
-    createProduct,
-    showEditProduct,
-    updateProduct,
-    deleteProduct
+  showProducts,
+  showProductById,
+  showNewProductForm,
+  getNewProductForm,
+  createProduct,
+  showEditProductForm,
+  updateProduct,
+  deleteProduct,
+  showProductInDashboard
 };
