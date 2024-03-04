@@ -1,0 +1,92 @@
+
+/* styles.css */
+
+/* Estilos para el cuerpo y la tipografía */
+body {
+    font-family: Arial, sans-serif;
+    font-family: "roboto";
+    margin: 0;
+    padding: 0;
+  }
+  
+  h1 {
+    font-size: 2em;
+  }
+  
+  /* Estilos para la barra de navegación */
+  nav {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+  }
+  
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-right: 10px;
+  }
+  
+  nav ul li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  nav ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Estilos para la lista de productos */
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centra los elementos horizontalmente */
+  }
+  
+  ul li {
+    flex: 0 0 calc(33.33% - 20px); /* Tamaño de cada producto */
+    margin: 10px;
+    border: 1px solid #fffefe;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  /* Estilos para las imágenes de los productos */
+  ul li img {
+   
+    display: block;
+    width: 100%; 
+    height: 500px; 
+    object-fit: cover;       
+    }
+    ul li::after {
+        background-color: rgb(88, 88, 88);  
+
+    }
+     
+  
+  /* Estilos adicionales para los productos (nombre, precio, etc.) */
+  ul li h2 {
+    margin-top: 0;
+  }
+  
+  ul li p {
+    margin-bottom: 0;
+  }
+  /* Estilos para los enlaces */
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  

@@ -3,37 +3,30 @@ const url = require('url');
 
 // Función para mostrar todos los productos
 const showProducts = async (req, res) => {
-  try {
-    const fullUrl = req.originalUrl;
-    console.log('URL completa:', fullUrl);
-
-    // Analizar la URL para obtener los parámetros de consulta
-    const parsedUrl = new URL(fullUrl, 'http://localhost:3000');
-    const queryParams = parsedUrl.searchParams;
-    console.log('Parámetros de consulta:', queryParams.toString());
-
-    // Extraer el parámetro "category" de los parámetros de consulta
-    const category = queryParams.get('category');
-    console.log('Categoría:', category);
-
-    if (category) {
-      const products = await Product.find({ 'category': category });
-      res.render('products', { products });
-    } else {
-      const products = await Product.find();
-      res.render('products', { products });
-    }
+    try {
+      const fullUrl = req.originalUrl;
+      const parsedUrl = new URL(fullUrl, 'http://localhost:3000');
+      const queryParams = parsedUrl.searchParams;
+      const category = queryParams.get('category');
+  
+      let products;
+      if (category) {
+        // Filtrar productos por categoría
+        products = await Product.find({ 'category': category });
+      } else {
+        products = await Product.find();
+      }
 
     
 
     // Renderizar la vista con los productos filtrados
 
+    res.render('products', { products });
   } catch (error) {
     console.error(error);
     res.status(500).send('Error al obtener los productos');
   }
 };
-
 
 // Función para mostrar el detalle de un producto por su ID
 const showProductById = async (req, res) => {

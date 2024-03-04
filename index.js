@@ -30,6 +30,8 @@ mongoose.connect(process.env.MONGO_URI, {
   console.error('Error al conectar a la base de datos:', err);
   process.exit(1);
 });
+//CSS
+app.use(express.static('public'));
 
 // Configuración de las rutas
 app.use('/', productRoutes);
@@ -69,14 +71,15 @@ app.get('/', async (req, res) => {
       <body>
         <nav>
           <ul>
-            <li><a href="/products">Productos</a></li>
+          <link rel="stylesheet" href="/styles.css">
+
             
             ${res.locals.categories.map(category => `<li><a href="/products?category=${encodeURIComponent(category)}">${category}</a></li>`).join('')}
 
             <li><a href="/login">Login</a></li>
           </ul>
         </nav>
-        <h1>¡Bienvenido a la tienda de ropa!</h1>
+        <h1>Productos</h1>
         <ul>
           ${productsList}
         </ul>
@@ -122,7 +125,7 @@ app.get('/dashboard/', async (req, res) => {
           <li><a href="/login">Login</a></li>
         </ul>
       </nav>
-      <h1>¡Bienvenido a la tienda de ropa!</h1>
+      <h1>Productos</h1>
       <ul>
           ${productsList}
         </ul>
