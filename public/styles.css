@@ -11,16 +11,20 @@ body {
   }
   
   h1 {
+    text-align: center;
     display: flex;
     font-size: 2em;
     align-items: center;
+
   }
   
   /* Estilos para la barra de navegación */
   nav {
-    background-color: #333;
+    background-color: #202020;
     color: #fff;
     padding: 10px;
+    text-align: center;
+
   }
   
   nav ul {
@@ -54,27 +58,34 @@ body {
   }
   
   ul li {
-    flex: 0 0 calc(33.33% - 20px); /* Tamaño de cada producto */
+    flex: 0 0 calc(25% - 20px); /* Tamaño de cada producto */
     margin: 10px;
     border: 1px solid #fffefe;
     padding: 10px;
     box-sizing: border-box;
+    text-align: center;
+    
   }
   
   /* Estilos para las imágenes de los productos */
-  ul li img {
-   
-    display: block;
-    width: 100%; 
-    height: 500px; 
-    object-fit: cover;       
-    }
-    ul li::after {
-        background-color: rgb(88, 88, 88);  
+/* Estilos para las imágenes de los productos */
+ul li img {
+  margin-top: 10px;
+  display: block;
+  width: 100%;
+  height: 600px;
+  object-fit: cover; /* Ajusta la imagen dentro del contenedor */
+}
 
-    }
+ul li::after {
+  background-color: rgb(88, 88, 88);
+}
+
      
-  
+    img:hover {
+      transform: scale(1.1); /* Cambia el tamaño de la imagen al 110% */
+      transition: transform 0.3s ease; /* Agrega una transición suave */
+    }
   /* Estilos adicionales para los productos (nombre, precio, etc.) */
   ul li h2 {
     margin-top: 0;
@@ -93,3 +104,5 @@ body {
     text-decoration: underline;
   }
   
+
+

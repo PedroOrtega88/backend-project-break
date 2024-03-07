@@ -104,7 +104,9 @@ app.get('/dashboard/', async (req, res) => {
       <p>${product.description}</p>
       <img src="${product.image}" alt="${product.name}">
       <p>Precio: ${product.price}€</p>
-      <a href="/dashboard/${product._id}">Ver detalles</a>
+      <a href="/dashboard/${product._id}">
+  <button>Ver detalles</button>
+</a>
     </li>
   `).join('');
   
@@ -121,7 +123,7 @@ app.get('/dashboard/', async (req, res) => {
         <ul>
           <li><a href="/products">Productos</a></li>
           ${res.locals.categories.map(category => `<li><a href="/products?category=${encodeURIComponent(category)}">${category}</a></li>`).join('')}
-          <li><a href="/dashboard/new">Nuevo Producto</a></li>
+          <a href="/dashboard/${product._id}" class="button-link">Ver detalles</a>
           <li><a href="/login">Login</a></li>
         </ul>
       </nav>
