@@ -1,7 +1,7 @@
 const Product = require('../models/Product');
 const url = require('url');
 
-// Función para mostrar todos los productos
+// Devuelve todos los productos
 const showProducts = async (req, res) => {
     try {
       const fullUrl = req.originalUrl;
@@ -19,7 +19,7 @@ const showProducts = async (req, res) => {
 
     
 
-    // Renderizar la vista con los productos filtrados
+    // Productos filtrados
 
     res.render('products', { products });
   } catch (error) {
@@ -28,7 +28,7 @@ const showProducts = async (req, res) => {
   }
 };
 
-// Función para mostrar el detalle de un producto por su ID
+//  Devuelve el detalle de un producto
 const showProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.productId);
@@ -41,12 +41,12 @@ const showProductById = async (req, res) => {
   }
 };
 
-// Función para mostrar el formulario de creación de un nuevo producto
+// Mostrar producto
 const showNewProductForm = (req, res) => {
   res.render('newProduct');
 };
 
-// Función para mostrar el formulario para crear un nuevo producto
+// Devuelve el formulario para subir un artículo nuevo.
 const getNewProductForm = (req, res) => {
     res.send(`
       <h1>Crear Nuevo Producto</h1>
@@ -80,12 +80,12 @@ const getNewProductForm = (req, res) => {
   };
   
 
-// Función para manejar la creación de un nuevo producto
+// Crea un nuevo producto
 const createProduct = async (req, res) => {
   try {
     const { name, description, image, category, size, price } = req.body;
 
-    // Crear un nuevo producto con los datos del formulario
+    // Devuelve el detalle de un producto en el dashboard.
     const newProduct = new Product({
       name,
       description,
@@ -104,7 +104,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-// Función para mostrar el formulario de edición de un producto por su ID
+// Devuelve el formulario para editar un producto.
 const showEditProductForm = async (req, res) => {
   try {
     const product = await Product.findById(req.params.productId);
@@ -117,7 +117,7 @@ const showEditProductForm = async (req, res) => {
   }
 };
 
-// Función para actualizar un producto por su ID
+// Actualiza un producto
 const updateProduct = async (req, res) => {
   try {
     const { name, description, image, category, size, price } = req.body;

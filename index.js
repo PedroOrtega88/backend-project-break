@@ -12,6 +12,7 @@ dotenv.config({ path: './.env' });
 // Inicialización de la aplicación Express
 const app = express();
 
+
 // Middleware para manejar datos del formulario
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -51,11 +52,11 @@ app.get('/', async (req, res) => {
     // Generar la lista de productos en HTML
     const productsList = products.map(product => `
       <li>
+      <img src="${product.image}" alt="${product.name}">
         <h2>${product.name}</h2>
-        <p>${product.description}</p>
-        <img src="${product.image}" alt="${product.name}">
+        <p>${product.description}</p>        
         <p>Precio: ${product.price}€</p>
-        <a href="/products/${product._id}">Ver detalles</a>
+        <button class="button" onclick="window.location.href='/dashboard/${product._id}'">Ver detalles</button>
       </li>
     `).join('');
 
@@ -79,7 +80,7 @@ app.get('/', async (req, res) => {
             <li><a href="/login">Login</a></li>
           </ul>
         </nav>
-        <h1>Productos</h1>
+        <h1>DASHBOARD</h1>
         <ul>
           ${productsList}
         </ul>
@@ -100,14 +101,16 @@ app.get('/dashboard/', async (req, res) => {
   // Generar la lista de productos en HTML
   const productsList = products.map(product => `
     <li>
-      <h2>${product.name}</h2>
-      <p>${product.description}</p>
-      <img src="${product.image}" alt="${product.name}">
+    <img src="${product.image}" alt="${product.name}">
+      <h2>${product.name}</h2>           
       <p>Precio: ${product.price}€</p>
-      <a href="/dashboard/${product._id}">
-  <button>Ver detalles</button>
-</a>
-    </li>
+      <p>${product.description}</p> 
+      <<button class="button" onclick="window.location.href='/dashboard/${product._id}'">Ver detalles</button>
+      </li>
+      </li>
+      
+
+
   `).join('');
   
   res.send(`
@@ -127,7 +130,7 @@ app.get('/dashboard/', async (req, res) => {
           <li><a href="/login">Login</a></li>
         </ul>
       </nav>
-      <h1>Productos</h1>
+      <h1>Dashboard</h1>
       <ul>
           ${productsList}
         </ul>
