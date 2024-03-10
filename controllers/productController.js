@@ -97,7 +97,7 @@ const createProduct = async (req, res) => {
     await newProduct.save();
 
     // Redireccionar 
-    res.redirect('/dashboard');
+    res.redirect('/dashboard',category);
   } catch (error) {
     console.error('Error al crear el producto:', error);
     res.status(500).send('Error interno del servidor');
